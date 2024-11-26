@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useParams, useNavigate } from 'react-router-dom';
-import { addAuthentication, getAuthentication, loadToken, removeAuthentication } from '../store/sessionStorage.js';
+import { loadToken, getUserID } from '../store/sessionStorage.js';
 
 import MainLayout from "./MainLayout.jsx";
 import Navbar from "../components/Navbar.jsx";
@@ -14,7 +14,7 @@ const Dashboard = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const currentPage = "dashboard";
 
-    const { userId } = useParams();
+    const userID = getUserID();
 
     const navigate = useNavigate();
 
@@ -34,8 +34,8 @@ const Dashboard = () => {
     if (isAuthenticated) {
         return (
             <>
-                <MainLayout userId={userId}>
-                    <Navbar userID={userId} currentPage={currentPage} />
+                <MainLayout userId={userID}>
+                    <Navbar userID={userID} currentPage={currentPage} />
                     <div className="flex flex-row w-full px-4 py-1 gap-4">
                         <div className="card card-bordered border-gray-300 min-w-60">
                             <div className="card py-4 px-6">

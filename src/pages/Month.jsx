@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getMonth } from "../http-actions/http.js";
 
 import MainLayout from "./MainLayout.jsx";
@@ -9,20 +9,24 @@ import AddIncome from "../components/AddIncome.jsx";
 import AddSpending from "../components/AddSpending.jsx";
 import IncomeTable from "../components/SpendingTable.jsx";
 import SpendingTable from "../components/SpendingTable.jsx";
+import { getUserID } from "../store/sessionStorage.js";
 
-const Month = ({ monthId }) => {
+const Month = () => {
 
     const navigate = useNavigate();
+    const currentPage = "Month";
 
-    const currentPage = "month"
     const [month, setMonth] = useState();
     const [loading, setLoading] = useState(true);
 
-    const { userId } = useParams();
+    const { monthID } = useParams();
+
+    const userID = getUserID();
 
     useEffect(() => {
+        console.log("monthID", monthID);
         const getMonthData = async () => {
-            const monthData = await getMonth(monthId);
+            const monthData = await getMonth(monthID);
             const dummyData = {
                 income: [
                     {
@@ -58,8 +62,12 @@ const Month = ({ monthId }) => {
                     Revenue: "-2500€"
                 }
             };
-
-            setMonth(dummyData);
+            if (monthData.income === null) {
+                monthData.income = [];
+            } if (monthData.spending === null) {
+                monthData.spending = [];
+            }
+            setMonth(monthData);
             setLoading(false);
         }
         getMonthData();
@@ -68,8 +76,8 @@ const Month = ({ monthId }) => {
     if (loading) {
         // While the data is loading, you can show a loading spinner or message
         return (
-            <MainLayout userId={userId}>
-                <Navbar userId={userId} currentPage={currentPage} />
+            <MainLayout userId={userID}>
+                <Navbar userId={userID} currentPage={currentPage} />
                 <div className="flex flex-row w-full h-full justify-center items-center px-4 py-1">
                     <div className="flex justify-center items-center h-full">
                         <p>Loading...</p>
@@ -78,32 +86,35 @@ const Month = ({ monthId }) => {
             </MainLayout >
         );
     }
+    //{month.stats.Income}
+    //{month.stats.Spending}
+    //{month.stats.Revenue}
 
     return (
         <>
-            <MainLayout userId={userId}>
-                <Navbar userId={userId} currentPage={currentPage} />
+            <MainLayout userId={userID}>
+                <Navbar userId={userID} currentPage={currentPage} />
                 <div className="flex flex-row w-full px-4 py-1">
                     <div className="stats stats-vertical lg:stats-horizontal card card-bordered border-gray-300">
                         <div className="stat">
                             <h2 className="card-title text-xl">Income</h2>
                             <p className="text-gray-500">Total</p>
                             <div className="card-actions justify-start mt-4">
-                                <h2 className="card-title text-4xl font-bold">{month.stats.Income}</h2>
+                                <h2 className="card-title text-4xl font-bold">0€</h2>
                             </div>
                         </div>
                         <div className="stat">
                             <h2 className="card-title text-xl">Spending</h2>
                             <p className="text-gray-500">Total</p>
                             <div className="card-actions justify-start mt-4">
-                                <h2 className="card-title text-4xl font-bold">{month.stats.Spending}</h2>
+                                <h2 className="card-title text-4xl font-bold">0€</h2>
                             </div>
                         </div>
                         <div className="stat">
                             <h2 className="card-title text-xl">Revenue</h2>
                             <p className="text-gray-500">Total</p>
                             <div className="card-actions justify-start mt-4">
-                                <h2 className="card-title text-4xl font-bold">{month.stats.Revenue}</h2>
+                                <h2 className="card-title text-4xl font-bold">0€</h2>
                             </div>
                         </div>
                     </div>
@@ -116,7 +127,7 @@ const Month = ({ monthId }) => {
                             onClick={() => document.getElementById('add_income_modal').showModal()}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                         </button>
-                        <AddIncome />
+                        <AddIncome monthID={monthID} />
                     </div>
                     <div className="flex w-full px-2 items-center">
                         <h2 className="text-xl font-bold">Spending</h2>
@@ -124,7 +135,7 @@ const Month = ({ monthId }) => {
                             onClick={() => document.getElementById('add_spending_modal').showModal()}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                         </button>
-                        <AddSpending />
+                        <AddSpending monthID={monthID} />
                     </div>
                 </div>
 

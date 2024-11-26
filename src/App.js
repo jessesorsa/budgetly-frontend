@@ -19,7 +19,7 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/plan" element={<Plan />} />
-            <Route path="/month/:monthId" element={<Month />} />
+            <Route path="/month/:monthID" element={<Month />} />
             <Route path="*" element={<h2>Page Not Found</h2>} />
           </Routes>
         </Router>

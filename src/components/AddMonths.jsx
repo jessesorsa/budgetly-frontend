@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { saveToken, saveUserID, getUserID } from "../store/sessionStorage";
+import { saveToken, saveUserID, getUserID, getBudgetID } from "../store/sessionStorage";
 import { v4 as uuidv4 } from 'uuid';
 import { createPlan } from "../http-actions/http.js";
 
@@ -11,6 +11,8 @@ const AddMonths = () => {
     const [endMonth, setEndMonth] = useState('');
     const [endDropdown, setEndDropdown] = useState(false);
     const [endYear, setEndYear] = useState('');
+
+    const [isLoading, setLoading] = useState(false);
 
     const [userID, setUserID] = useState('');
 
@@ -59,6 +61,7 @@ const AddMonths = () => {
     }
 
     const addMonths = async () => {
+        setLoading(true);
         const sMonth = monthToNumber(startMonth);
         const eMonth = monthToNumber(endMonth);
 
@@ -67,10 +70,12 @@ const AddMonths = () => {
         console.log(startDate, endDate);
 
         const userID = getUserID();
+        const budgetID = getBudgetID();
 
 
-        const res = await createPlan(startDate, endDate, userID);
+        const res = await createPlan(startDate, endDate, userID, budgetID);
         console.log(res);
+        setLoading(false);
     }
 
     useEffect(() => {
@@ -106,11 +111,14 @@ const AddMonths = () => {
                         </div>
                     </div>
                     <div className="flex flex-row justify-center">
-                        <form method="dialog justify-center items-centered">
-                            <div className="flex flex-row">
-                                <div className="pr-4"><button className="btn">Cancel</button></div>
-                                <div className=""></div><button className="btn btn-primary" onClick={addMonths}>Add</button></div>
-                        </form>
+                        <div className="flex flex-row">
+                            <form method="dialog">
+                                {isLoading && (
+                                    <div className="pr-4"><button className="btn btn-disabled">Close</button></div>)}
+                                {!isLoading && (
+                                    <div className="pr-4"><button className="btn">Close</button></div>)}
+                            </form>
+                            <div className=""></div><button className="btn btn-primary" onClick={addMonths}>Add</button></div>
                     </div>
                 </div >
             </dialog >

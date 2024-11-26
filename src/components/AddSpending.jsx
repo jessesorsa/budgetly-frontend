@@ -1,14 +1,27 @@
+import { createEvent } from "../http-actions/http.js";
 import { useEffect, useState } from "react";
+import { getBudgetID, getUserID } from "../store/sessionStorage.js";
 
-const AddSpending = () => {
+const AddSpending = ({ monthID }) => {
 
     const [spendingName, setSpendingName] = useState('');
     const [category, setCategory] = useState('');
     const [amount, setAmount] = useState('');
     const [recurring, setRecurring] = useState(false);
 
+    const [isLoading, setLoading] = useState(false);
+
     const addEvent = async () => {
+        setLoading(true);
+        const budgetID = getBudgetID();
+        const userID = getUserID();
+
         console.log(spendingName, category, amount, recurring);
+        await createEvent(spendingName, category, amount, recurring, userID, monthID, budgetID);
+        setAmount('');
+        setSpendingName('');
+        setCategory('');
+        setLoading(false);
     }
 
     return (
@@ -29,11 +42,14 @@ const AddSpending = () => {
                         </div>
                     </div>
                     <div className="flex flex-row justify-center">
-                        <form method="dialog justify-center items-centered">
-                            <div className="flex flex-row">
-                                <div className="pr-4"><button className="btn">Cancel</button></div>
-                                <div className=""></div><button className="btn btn-primary" onClick={addEvent}>Add</button></div>
-                        </form>
+                        <div className="flex flex-row justify-center items-centered">
+                            <form method="dialog">
+                                {isLoading && (
+                                    <div className="pr-4"><button className="btn btn-disabled">Close</button></div>)}
+                                {!isLoading && (
+                                    <div className="pr-4"><button className="btn">Close</button></div>)}
+                            </form>
+                            <div className=""></div><button className="btn btn-primary" onClick={addEvent}>Add</button></div>
                     </div>
                 </div >
             </dialog >

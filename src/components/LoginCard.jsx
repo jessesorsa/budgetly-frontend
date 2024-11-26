@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { testApi, login } from "../http-actions/http";
-import { saveToken, saveUserID } from "../store/sessionStorage";
+import { saveToken, saveUserID, saveBudgetID } from "../store/sessionStorage";
 
 const LoginCard = () => {
 
-    const userId = 1234;
-
     const navigate = useNavigate();
 
-    const [value, setValue] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -19,6 +16,7 @@ const LoginCard = () => {
 
         if (res.token) {
             saveUserID(res.user.id);
+            saveBudgetID(res.budgetPlanID);
             saveToken(res.token);
             navigate(`/dashboard`);
         }

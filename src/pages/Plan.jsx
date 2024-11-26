@@ -1,57 +1,44 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from 'react-router-dom';
-import { getPlan } from "../http-actions/http.js";
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { getMonths, getPlan } from "../http-actions/http.js";
 
 import MainLayout from "./MainLayout.jsx";
 import Navbar from "../components/Navbar.jsx";
 import AddMonths from "../components/AddMonths.jsx";
+import { getBudgetID, getUserID } from "../store/sessionStorage.js";
 
 const Plan = () => {
 
     const currentPage = "plan";
 
     const navigate = useNavigate();
+    const userID = getUserID();
 
-    const { userId } = useParams();
-    const monthId = 1;
-
-    const [plan, setPlan] = useState();
+    const [plan, setPlan] = useState("");
     const [loading, setLoading] = useState(true);
 
-    const goToMonth = async () => {
-        navigate(`/month/${monthId}`)
+    const goToMonth = async (monthID) => {
+        console.log(monthID);
+        navigate(`/month/${monthID}`)
     }
 
     useEffect(() => {
         const getPlanData = async () => {
-            const planData = await getPlan();
+            const budgetID = getBudgetID();
+
+            const planData = await getPlan(budgetID);
             const dummyData = {
                 months: [
                     {
-                        "name": "January",
-                        "income": "+500€",
-                        "spending": "-300€",
-                        "sum": "+200€",
-                        "total": "1500€",
-                        "assets": "1200€"
+                        "monthlyPlanID": "18586350-06de-46c0-a977-2c18199c00e1",
+                        "monthName": "November",
+                        "totalRevenue": "1760",
+                        "totalCosts": "-1110",
+                        "sum": "650",
+                        "equity": "650",
+                        "assets": "0"
                     },
-                    {
-                        "name": "February",
-                        "income": "+700€",
-                        "spending": "-400€",
-                        "sum": "+300€",
-                        "total": "1800€",
-                        "assets": "1500€"
-                    },
-                    {
-                        "name": "March",
-                        "income": "+600€",
-                        "spending": "-350€",
-                        "sum": "+250€",
-                        "total": "2000€",
-                        "assets": "1700€"
-                    }
                 ],
                 stats: {
                     currentBalance: "2000€",
@@ -59,8 +46,12 @@ const Plan = () => {
                     assets: "-2500€"
                 }
             }
-
-            setPlan(dummyData);
+            if (planData === null) {
+                setPlan([]);
+            }
+            else {
+                setPlan(planData);
+            }
             setLoading(false);
         }
         getPlanData();
@@ -68,8 +59,8 @@ const Plan = () => {
 
     if (loading) {
         return (
-            <MainLayout userId={userId}>
-                <Navbar userId={userId} currentPage={currentPage} />
+            <MainLayout userId={userID}>
+                <Navbar userId={userID} currentPage={currentPage} />
                 <div className="flex flex-row w-full h-full justify-center items-center px-4 py-1">
                     <div className="flex justify-center items-center h-full">
                         <p>Loading...</p>
@@ -79,31 +70,36 @@ const Plan = () => {
         );
     }
 
+    //{plan.stats.currentBalance}
+    //{plan.stats.predictedBalance}
+    //{plan.stats.assets}
+
+
     return (
         <>
-            <MainLayout userId={userId}>
-                <Navbar userId={userId} currentPage={currentPage} />
+            <MainLayout userId={userID}>
+                <Navbar userId={userID} currentPage={currentPage} />
                 <div className="flex flex-row w-full px-4 py-1">
                     <div className="stats stats-vertical lg:stats-horizontal card card-bordered border-gray-300">
                         <div className="stat">
                             <h2 className="card-title text-xl">Current balance</h2>
                             <p className="text-gray-500">Total</p>
                             <div className="card-actions justify-start mt-4">
-                                <h2 className="card-title text-4xl font-bold">{plan.stats.currentBalance}</h2>
+                                <h2 className="card-title text-4xl font-bold">0€</h2>
                             </div>
                         </div>
                         <div className="stat">
                             <h2 className="card-title text-xl">Predicted balance</h2>
                             <p className="text-gray-500">Total</p>
                             <div className="card-actions justify-start mt-4">
-                                <h2 className="card-title text-4xl font-bold">{plan.stats.predictedBalance}</h2>
+                                <h2 className="card-title text-4xl font-bold">0€</h2>
                             </div>
                         </div>
                         <div className="stat">
                             <h2 className="card-title text-xl">Assets</h2>
                             <p className="text-gray-500">Total</p>
                             <div className="card-actions justify-start mt-4">
-                                <h2 className="card-title text-4xl font-bold">{plan.stats.assets}</h2>
+                                <h2 className="card-title text-4xl font-bold">0€</h2>
                             </div>
                         </div>
                     </div>
@@ -136,13 +132,14 @@ const Plan = () => {
                                 </tr>
                             </thead>
                             <tbody className="bg-white">
-                                {plan.months.map((month, index) => (
-                                    <tr className="hover:bg-gray-50" key={index} onClick={goToMonth}>
-                                        <td className="text-center">{month.name}</td>
-                                        <td className="text-center"><div className="badge bg-green-100 text-green-800">{month.income}</div></td>
-                                        <td className="text-center"><div className="badge bg-red-100 text-red-800">{month.spending}</div></td>
-                                        <td className="text-center"><div className="badge bg-green-100 text-green-800">{month.sum}</div></td>
-                                        <td className="text-center">{month.total}</td>
+
+                                {plan.map((month, index) => (
+                                    <tr className="hover:bg-gray-50" key={index} onClick={() => goToMonth(month.monthlyPlanID)}>
+                                        <td className="text-center">{month.monthName}</td>
+                                        <td className="text-center"><div className="badge bg-green-100 text-green-800">{month.totalRevenue}</div></td>
+                                        <td className="text-center"><div className="badge bg-red-100 text-red-800">{month.totalCosts}</div></td>
+                                        <td className="text-center"><div className="badge">{month.sum}</div></td>
+                                        <td className="text-center">0€</td>
                                         <td className="text-center">{month.assets}</td>
                                         <td className="text-center w-12">
                                             <button className="btn btn-square btn-ghost btn-sm">

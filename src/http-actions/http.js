@@ -78,6 +78,7 @@ const login = async (email, password) => {
     return res;
 }
 
+/*
 const getPlan = async (user_uuid) => {
     let res;
     try {
@@ -88,41 +89,21 @@ const getPlan = async (user_uuid) => {
     }
     return res;
 }
+*/
 
-const createPlan = async (startDate, endDate, userID) => {
+const createPlan = async (startDate, endDate, userID, budgetID) => {
 
     const token = loadToken();
     console.log("creating plan");
-    console.log(token)
-
-    const budget = {
-        "createdBy": userID,
-        "modifiedBy": userID,
-        "name": "name",
-        "description": "desc",
-        "customerID": userID
-    }
-
-    console.log(budget);
-
-    const budget_plan = await fetch(`${backendURL}/budgetPlan`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(budget)
-    });
-
-    const budgetPlan = await budget_plan.json();
-    console.log("res1", budgetPlan);
 
     const plan = {
         "creator": userID,
-        "BudgetPlanID": budgetPlan.id,
+        "BudgetPlanID": budgetID,
         "startDate": startDate,
         "endDate": endDate
     }
+
+    console.log(plan);
 
     const response = await fetch(`${backendURL}/monthlyPlan`, {
         method: "POST",
@@ -132,31 +113,44 @@ const createPlan = async (startDate, endDate, userID) => {
         },
         body: JSON.stringify(plan)
     });
-    const res = await response.json();
 
+    console.log("called the /monthlyPlan");
+    const res = await response.json();
 
     console.log("res", res);
     return res;
 }
 
-const getMonth = async (month_id) => {
-    let res;
-    try {
-        const response = await fetch(`${backendURL}/month/${month_id}`);
-        res = await response.json();
-    } catch (error) {
-        res = "hello";
-    }
+const getMonth = async (monthID) => {
+    const token = loadToken();
+    const response = await fetch(`${backendURL}/month/${monthID}/turnovers`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+    })
+    const res = await response.json();
+    console.log("res", res);
     return res;
 };
 
-
-const getMonths = async (plan_id) => {
-    const response = await fetch(`${backendURL}/monthlyPlan/${plan_id}`);
+const getPlan = async (budgetID) => {
+    const token = loadToken();
+    const response = await fetch(`${backendURL}/monthlyPlan/${budgetID}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+    });
     const res = await response.json();
+
+    console.log("res", res);
     return res;
 }
 
+/*
 const createMonth = async (month, token) => {
     const response = await fetch(`${backendURL}/monthlyPlan`, {
         method: "POST",
@@ -170,19 +164,41 @@ const createMonth = async (month, token) => {
     console.log(res);
     return res;
 }
+*/
 
+const createEvent = async (name, category, amount_string, recurring, userID, monthID, budgetID) => {
+    const token = loadToken();
 
-const createEvent = async (eventData) => {
-    const response = await fetch(`${backendURL}/event`, {
+    const amount = parseFloat(amount_string);
+
+    console.log("monthID", monthID);
+
+    const body = {
+        "Creator": userID,
+        "Total": amount,
+        "Name": name,
+        "Recurring": false,
+        "Valuta": "2024-12-02",
+        "isAsset": false,
+        "startOfReoccurence": "",
+        "endOfReoccurence": "",
+        "numberOfReoccurences": 0,
+        "categoryID": "25f2da7b-8169-40e2-a5f6-4345ccada10b",
+        "monthlyPlanID": monthID,
+        "BudgetPlanID": budgetID,
+    }
+
+    const response = await fetch(`${backendURL}/turnover`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         },
-        body: eventData
+        body: JSON.stringify(body)
     });
-    const res = await response.json();
-    console.log(res);
-    return res;
+
+    console.log(response);
+    return response;
 }
 
-export { getPlan, createPlan, testApi, login, signUp, getMonth, getMonths, createEvent, createMonth }
+export { createPlan, testApi, login, signUp, getMonth, getPlan, createEvent }

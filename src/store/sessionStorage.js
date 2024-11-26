@@ -25,4 +25,17 @@ const getUserID = () => {
     return id;
 }
 
-export { saveToken, loadToken, clearToken, saveUserID, getUserID }
+const saveBudgetID = (id) => {
+    sessionStorage.setItem("budgetID", id);
+}
+
+const clearBudgetID = () => {
+    sessionStorage.removeItem("budgetID");
+}
+
+const getBudgetID = () => {
+    const id = sessionStorage.getItem("budgetID");
+    return id;
+}
+
+export { saveToken, loadToken, clearToken, saveUserID, getUserID, saveBudgetID, clearBudgetID, getBudgetID }
