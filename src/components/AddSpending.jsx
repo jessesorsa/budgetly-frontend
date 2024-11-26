@@ -1,6 +1,7 @@
 import { createEvent } from "../http-actions/http.js";
 import { useEffect, useState } from "react";
 import { getBudgetID, getUserID } from "../store/sessionStorage.js";
+import { useParams, useNavigate } from 'react-router-dom';
 
 const AddSpending = ({ monthID }) => {
 
@@ -17,11 +18,14 @@ const AddSpending = ({ monthID }) => {
         const userID = getUserID();
 
         console.log(spendingName, category, amount, recurring);
-        await createEvent(spendingName, category, amount, recurring, userID, monthID, budgetID);
+        const amount_number = -(Math.abs(parseFloat(amount)));
+        await createEvent(spendingName, category, amount_number, recurring, userID, monthID, budgetID);
         setAmount('');
         setSpendingName('');
         setCategory('');
         setLoading(false);
+
+        // The page is naively reloaded. I didn't have time to implement proper state management
     }
 
     return (
@@ -47,7 +51,7 @@ const AddSpending = ({ monthID }) => {
                                 {isLoading && (
                                     <div className="pr-4"><button className="btn btn-disabled">Close</button></div>)}
                                 {!isLoading && (
-                                    <div className="pr-4"><button className="btn">Close</button></div>)}
+                                    <div className="pr-4"><button className="btn" onClick={() => window.location.reload()}>Close</button></div>)}
                             </form>
                             <div className=""></div><button className="btn btn-primary" onClick={addEvent}>Add</button></div>
                     </div>

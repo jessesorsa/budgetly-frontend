@@ -7,19 +7,22 @@ import MainLayout from "./MainLayout.jsx";
 import Navbar from "../components/Navbar.jsx";
 import AddIncome from "../components/AddIncome.jsx";
 import AddSpending from "../components/AddSpending.jsx";
-import IncomeTable from "../components/SpendingTable.jsx";
+import IncomeTable from "../components/IncomeTable.jsx";
 import SpendingTable from "../components/SpendingTable.jsx";
 import { getUserID } from "../store/sessionStorage.js";
 
 const Month = () => {
 
-    const navigate = useNavigate();
-    const currentPage = "Month";
+    const currentPage = "month";
 
     const [month, setMonth] = useState();
     const [loading, setLoading] = useState(true);
 
     const { monthID } = useParams();
+
+    const location = useLocation();
+    const { monthName } = location.state
+
 
     const userID = getUserID();
 
@@ -27,41 +30,6 @@ const Month = () => {
         console.log("monthID", monthID);
         const getMonthData = async () => {
             const monthData = await getMonth(monthID);
-            const dummyData = {
-                income: [
-                    {
-                        name: "Salary",
-                        category: "Job",
-                        amount: "1500€",
-                        recurring: true
-                    },
-                    {
-                        name: "Freelance Project",
-                        category: "Freelance",
-                        amount: "500€",
-                        recurring: false
-                    }
-                ],
-                spending: [
-                    {
-                        name: "Rent",
-                        category: "Housing",
-                        amount: "600€",
-                        recurring: true
-                    },
-                    {
-                        name: "Groceries",
-                        category: "Food",
-                        amount: "200€",
-                        recurring: false
-                    }
-                ],
-                stats: {
-                    Income: "2000€",
-                    Spending: "5000€",
-                    Revenue: "-2500€"
-                }
-            };
             if (monthData.income === null) {
                 monthData.income = [];
             } if (monthData.spending === null) {
@@ -118,6 +86,11 @@ const Month = () => {
                             </div>
                         </div>
                     </div>
+                    <div className="stats stats-vertical lg:stats-horizontal card border-gray-300">
+                        <div className="stat">
+                            <h2 className="card-title text-3xl text-bolded items-center justify-center">{monthName}</h2>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="flex flex-row w-full h-16 py-1 px-4 items-center">
@@ -140,18 +113,8 @@ const Month = () => {
                 </div>
 
                 <div className="flex flex-row w-full gap-4">
-                    <div className="flex card card-bordered border-gray-300 ml-4 mt-1 mb-4 w-full min-h-96">
-                        <div className="overflow-x-auto">
-                            <IncomeTable events={month} />
-                        </div>
-                        {/*<p>UserID: {userId}</p>*/}
-                    </div>
-                    <div className="card card-bordered border-gray-300 mr-4 mt-1 mb-4 w-full min-h-96">
-                        <div className="overflow-x-auto">
-                            <SpendingTable events={month} />
-                        </div>
-                        {/*<p>UserID: {userId}</p>*/}
-                    </div>
+                    <IncomeTable events={month} />
+                    <SpendingTable events={month} />
                 </div>
             </MainLayout >
         </>

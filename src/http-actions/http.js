@@ -150,26 +150,8 @@ const getPlan = async (budgetID) => {
     return res;
 }
 
-/*
-const createMonth = async (month, token) => {
-    const response = await fetch(`${backendURL}/monthlyPlan`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-        body: month
-    });
-    const res = await response.json();
-    console.log(res);
-    return res;
-}
-*/
-
-const createEvent = async (name, category, amount_string, recurring, userID, monthID, budgetID) => {
+const createEvent = async (name, category, amount, recurring, userID, monthID, budgetID) => {
     const token = loadToken();
-
-    const amount = parseFloat(amount_string);
 
     console.log("monthID", monthID);
 

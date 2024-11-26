@@ -18,9 +18,9 @@ const Plan = () => {
     const [plan, setPlan] = useState("");
     const [loading, setLoading] = useState(true);
 
-    const goToMonth = async (monthID) => {
+    const goToMonth = async (monthID, monthName) => {
         console.log(monthID);
-        navigate(`/month/${monthID}`)
+        navigate(`/month/${monthID}`, { state: { monthName: monthName } });
     }
 
     useEffect(() => {
@@ -134,13 +134,13 @@ const Plan = () => {
                             <tbody className="bg-white">
 
                                 {plan.map((month, index) => (
-                                    <tr className="hover:bg-gray-50" key={index} onClick={() => goToMonth(month.monthlyPlanID)}>
+                                    <tr className="hover:bg-gray-50" key={index} onClick={() => goToMonth(month.monthlyPlanID, month.monthName)}>
                                         <td className="text-center">{month.monthName}</td>
-                                        <td className="text-center"><div className="badge bg-green-100 text-green-800">{month.totalRevenue}</div></td>
-                                        <td className="text-center"><div className="badge bg-red-100 text-red-800">{month.totalCosts}</div></td>
-                                        <td className="text-center"><div className="badge">{month.sum}</div></td>
-                                        <td className="text-center">0€</td>
-                                        <td className="text-center">{month.assets}</td>
+                                        <td className="text-center"><div className="badge bg-green-100 text-green-800">{month.totalRevenue}€</div></td>
+                                        <td className="text-center"><div className="badge bg-red-100 text-red-800">{month.totalCosts}€</div></td>
+                                        <td className="text-center"><div className="badge">{month.sum}€</div></td>
+                                        <td className="text-center">{month.equity}€</td>
+                                        <td className="text-center">{month.assets}€</td>
                                         <td className="text-center w-12">
                                             <button className="btn btn-square btn-ghost btn-sm">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

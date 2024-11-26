@@ -116,7 +116,7 @@ const AddMonths = () => {
                                 {isLoading && (
                                     <div className="pr-4"><button className="btn btn-disabled">Close</button></div>)}
                                 {!isLoading && (
-                                    <div className="pr-4"><button className="btn">Close</button></div>)}
+                                    <div className="pr-4"><button className="btn" onClick={() => window.location.reload()}>Close</button></div>)}
                             </form>
                             <div className=""></div><button className="btn btn-primary" onClick={addMonths}>Add</button></div>
                     </div>
