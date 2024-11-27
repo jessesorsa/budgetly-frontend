@@ -24,6 +24,8 @@ const AddIncome = ({ monthID }) => {
         setIncomeName('');
         setCategory('');
         setLoading(false);
+
+        // The page is naively reloaded. I didn't have time to implement proper state management
     }
 
     return (

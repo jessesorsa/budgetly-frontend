@@ -21,13 +21,12 @@ const Month = () => {
     const { monthID } = useParams();
 
     const location = useLocation();
-    const { monthName } = location.state
-
+    const { monthStats } = location.state
 
     const userID = getUserID();
 
     useEffect(() => {
-        console.log("monthID", monthID);
+        console.log("monthStats", monthStats);
         const getMonthData = async () => {
             const monthData = await getMonth(monthID);
             if (monthData.income === null) {
@@ -68,27 +67,27 @@ const Month = () => {
                             <h2 className="card-title text-xl">Income</h2>
                             <p className="text-gray-500">Total</p>
                             <div className="card-actions justify-start mt-4">
-                                <h2 className="card-title text-4xl font-bold">0€</h2>
+                                <h2 className="card-title text-4xl font-bold">{monthStats.totalRevenue}€</h2>
                             </div>
                         </div>
                         <div className="stat">
                             <h2 className="card-title text-xl">Spending</h2>
                             <p className="text-gray-500">Total</p>
                             <div className="card-actions justify-start mt-4">
-                                <h2 className="card-title text-4xl font-bold">0€</h2>
+                                <h2 className="card-title text-4xl font-bold">{monthStats.totalCosts}€</h2>
                             </div>
                         </div>
                         <div className="stat">
                             <h2 className="card-title text-xl">Revenue</h2>
                             <p className="text-gray-500">Total</p>
                             <div className="card-actions justify-start mt-4">
-                                <h2 className="card-title text-4xl font-bold">0€</h2>
+                                <h2 className="card-title text-4xl font-bold">{monthStats.sum}€</h2>
                             </div>
                         </div>
                     </div>
                     <div className="stats stats-vertical lg:stats-horizontal card border-gray-300">
                         <div className="stat">
-                            <h2 className="card-title text-3xl text-bolded items-center justify-center">{monthName}</h2>
+                            <h2 className="card-title text-3xl text-bolded items-center justify-center">{monthStats.monthName}</h2>
                         </div>
                     </div>
                 </div>

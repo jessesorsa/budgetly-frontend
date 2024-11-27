@@ -18,9 +18,9 @@ const Plan = () => {
     const [plan, setPlan] = useState("");
     const [loading, setLoading] = useState(true);
 
-    const goToMonth = async (monthID, monthName) => {
-        console.log(monthID);
-        navigate(`/month/${monthID}`, { state: { monthName: monthName } });
+    const goToMonth = async (month) => {
+        console.log(month);
+        navigate(`/month/${month.monthlyPlanID}`, { state: { monthStats: month } });
     }
 
     useEffect(() => {
@@ -28,24 +28,6 @@ const Plan = () => {
             const budgetID = getBudgetID();
 
             const planData = await getPlan(budgetID);
-            const dummyData = {
-                months: [
-                    {
-                        "monthlyPlanID": "18586350-06de-46c0-a977-2c18199c00e1",
-                        "monthName": "November",
-                        "totalRevenue": "1760",
-                        "totalCosts": "-1110",
-                        "sum": "650",
-                        "equity": "650",
-                        "assets": "0"
-                    },
-                ],
-                stats: {
-                    currentBalance: "2000€",
-                    predictedBalance: "5000€",
-                    assets: "-2500€"
-                }
-            }
             if (planData === null) {
                 setPlan([]);
             }
@@ -110,7 +92,7 @@ const Plan = () => {
                     <div className="flex justify-end px-4">
                         <button className="btn rounded-3xl btn-md shadow-sm border-gray-300 text-black bg-white hover:bg-white my-1"
                             onClick={() => document.getElementById('add_months_modal').showModal()}>
-                            <p className="text-sm">Create plan</p>
+                            <p className="text-sm">Create new plan</p>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                         </button></div>
                     <AddMonths />
@@ -134,7 +116,7 @@ const Plan = () => {
                             <tbody className="bg-white">
 
                                 {plan.map((month, index) => (
-                                    <tr className="hover:bg-gray-50" key={index} onClick={() => goToMonth(month.monthlyPlanID, month.monthName)}>
+                                    <tr className="hover:bg-gray-50" key={index} onClick={() => goToMonth(month)}>
                                         <td className="text-center">{month.monthName}</td>
                                         <td className="text-center"><div className="badge bg-green-100 text-green-800">{month.totalRevenue}€</div></td>
                                         <td className="text-center"><div className="badge bg-red-100 text-red-800">{month.totalCosts}€</div></td>
