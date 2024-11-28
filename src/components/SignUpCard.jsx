@@ -10,16 +10,20 @@ const LoginCard = () => {
     const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const [errorValue, setErrorValue] = useState(false);
 
     const navigate = useNavigate();
 
     const SignUp = async () => {
         console.log(email, password);
         const res = await signUp(firstName, lastName, email, password);
-        console.log(res);
 
         setEmail("");
         setPassword("");
+        if (!res.budgetPlanID) {
+            setErrorValue(true);
+            setTimeout(() => setErrorValue(false), 2000);
+        }
     }
 
     useEffect(() => {
@@ -36,6 +40,14 @@ const LoginCard = () => {
 
     return (
         <>
+            {errorValue && (
+                <div className="toast toast-top toast-center">
+                    <div className="alert alert-warning">
+                        <span>Error with sign up!</span>
+                    </div>
+                </div >
+            )
+            }
             <div className="flex justify-center">
                 <div className="card bg-base-100 w-96 shadow-xl p-2">
                     <div className="card-body">

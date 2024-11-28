@@ -50,7 +50,6 @@ const LineChart = () => {
                 },
             },
             y: {
-                beginAtZero: true,
                 grid: {
                     display: false, // Disable y-axis grid
                 },
@@ -64,8 +63,6 @@ const LineChart = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        const labels = [];
-        const totalBalance = [];
 
         console.log("getting plan data");
         const getPlanData = async () => {
@@ -80,6 +77,12 @@ const LineChart = () => {
             }
         }
         getPlanData();
+
+    }, [])
+
+    useEffect(() => {
+        const labels = [];
+        const totalBalance = [];
 
         if (plan !== []) {
             plan.forEach((month) => {
@@ -96,12 +99,12 @@ const LineChart = () => {
                 fill: false,
                 pointRadius: 0,
                 borderColor: '#2563eb',
-                tension: 0.5
+                backgroundColor: '#2563eb',
+                tension: 0.3
             }]
         };
         setData(realData);
         setIsLoading(false);
-
     }, [plan])
 
     if (isLoading === true) {

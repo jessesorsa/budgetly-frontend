@@ -9,6 +9,7 @@ const LoginCard = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [errorValue, setErrorValue] = useState(false);
 
     const Login = async () => {
         const res = await login(email, password);
@@ -22,6 +23,11 @@ const LoginCard = () => {
         }
         setEmail("");
         setPassword("");
+
+        if (!res.budgetPlanID) {
+            setErrorValue(true);
+            setTimeout(() => setErrorValue(false), 2000);
+        }
     }
 
     useEffect(() => {
@@ -36,6 +42,14 @@ const LoginCard = () => {
 
     return (
         <>
+            {errorValue && (
+                <div className="toast toast-top toast-center">
+                    <div className="alert alert-warning">
+                        <span>Error with login!</span>
+                    </div>
+                </div >
+            )
+            }
             <div className="flex justify-center">
                 <div className="card bg-base-100 w-96 shadow-xl p-2">
                     <div className="card-body">

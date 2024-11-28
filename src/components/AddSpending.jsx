@@ -36,14 +36,17 @@ const AddSpending = ({ monthID }) => {
                     <div className="flex flex-col gap-6 w-full py-6">
                         <input type="text" placeholder="Name" className="input input-bordered w-full" value={spendingName}
                             onChange={(e) => setSpendingName(e.target.value)} />
-                        <input type="text" placeholder="Category" className="input input-bordered w-full" value={category}
-                            onChange={(e) => setCategory(e.target.value)} />
-                        <input type="text" placeholder="Amount" className="input input-bordered w-full" value={amount}
-                            onChange={(e) => setAmount(e.target.value)} />
-                        <div className="flex flex-row gap-6">
+                        {/*<input type="text" placeholder="Category" className="input input-bordered w-full" value={category}
+                            onChange={(e) => setCategory(e.target.value)} />*/}
+                        <div className="flex flex-row items-center justify-between">
+                            <input type="text" placeholder="Amount" className="input input-bordered w-full" value={amount}
+                                onChange={(e) => setAmount(e.target.value)} />
+                            <p className="text text-lg mx-6">€</p>
+                        </div>
+                        {/*<div className="flex flex-row gap-6">
                             <input type="checkbox" className="checkbox" checked={recurring} onChange={(e) => setRecurring(e.target.checked)} />
                             <p className="">Recurring</p>
-                        </div>
+                        </div>*/}
                     </div>
                     <div className="flex flex-row justify-center">
                         <div className="flex flex-row justify-center items-centered">

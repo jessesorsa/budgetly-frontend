@@ -13,6 +13,11 @@ import Plan from "./Plan.jsx";
 
 const Dashboard = () => {
 
+    const [plan, setPlan] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [startBalance, setStartBalance] = useState(0);
+    const [endBalance, setEndBalance] = useState(0);
+
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [bar, setBar] = useState(false);
     const [line, setLine] = useState(true);
@@ -39,7 +44,34 @@ const Dashboard = () => {
             setIsAuthenticated(true);
         };
 
+        const getPlanData = async () => {
+            const budgetID = getBudgetID();
+
+            const planData = await getPlan(budgetID);
+            if (planData === null) {
+                setPlan([]);
+            }
+            else {
+                setPlan(planData);
+            }
+            setLoading(false);
+        }
+        getPlanData();
+
     }, [navigate]);
+
+    useEffect(() => {
+        if (plan !== []) {
+            let calculatedBalance = 0;
+            plan.forEach((month, index) => {
+                if (index === 0) {
+                    setStartBalance(month.sum)
+                }
+                calculatedBalance += parseFloat(month.sum);
+            });
+            setEndBalance(calculatedBalance);
+        }
+    }, [plan])
 
     if (isAuthenticated) {
         return (
@@ -52,16 +84,16 @@ const Dashboard = () => {
                                 <h2 className="card-title text-xl">Start balance</h2>
                                 <p className="text-gray-500">Total</p>
                                 <div className="card-actions justify-start mt-4">
-                                    <h2 className="card-title text-4xl font-bold">0€</h2>
+                                    <h2 className="card-title text-4xl font-bold">{startBalance}€</h2>
                                 </div>
                             </div>
                         </div>
                         <div className="card card-bordered border-gray-300 min-w-60">
                             <div className="card py-4 px-6">
-                                <h2 className="card-title text-xl">Predicted balance</h2>
+                                <h2 className="card-title text-xl">End balance</h2>
                                 <p className="text-gray-500">Total</p>
                                 <div className="card-actions justify-start mt-4">
-                                    <h2 className="card-title text-4xl font-bold">0€</h2>
+                                    <h2 className="card-title text-4xl font-bold">{endBalance}€</h2>
                                 </div>
                             </div>
                         </div>

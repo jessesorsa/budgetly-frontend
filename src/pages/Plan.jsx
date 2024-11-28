@@ -15,8 +15,10 @@ const Plan = () => {
     const navigate = useNavigate();
     const userID = getUserID();
 
-    const [plan, setPlan] = useState("");
+    const [plan, setPlan] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [startBalance, setStartBalance] = useState(0);
+    const [endBalance, setEndBalance] = useState(0);
 
     const goToMonth = async (month) => {
         console.log(month);
@@ -24,6 +26,7 @@ const Plan = () => {
     }
 
     useEffect(() => {
+
         const getPlanData = async () => {
             const budgetID = getBudgetID();
 
@@ -37,7 +40,21 @@ const Plan = () => {
             setLoading(false);
         }
         getPlanData();
+
     }, [])
+
+    useEffect(() => {
+        if (plan !== []) {
+            let calculatedBalance = 0;
+            plan.forEach((month, index) => {
+                if (index === 0) {
+                    setStartBalance(parseFloat(month.sum))
+                }
+                calculatedBalance += parseFloat(month.sum);
+            });
+            setEndBalance(calculatedBalance);
+        }
+    }, [plan])
 
     if (loading) {
         return (
@@ -67,14 +84,14 @@ const Plan = () => {
                             <h2 className="card-title text-xl">Start balance</h2>
                             <p className="text-gray-500">Total</p>
                             <div className="card-actions justify-start mt-4">
-                                <h2 className="card-title text-4xl font-bold">0€</h2>
+                                <h2 className="card-title text-4xl font-bold">{startBalance}€</h2>
                             </div>
                         </div>
                         <div className="stat">
-                            <h2 className="card-title text-xl">Predicted balance</h2>
+                            <h2 className="card-title text-xl">End balance</h2>
                             <p className="text-gray-500">Total</p>
                             <div className="card-actions justify-start mt-4">
-                                <h2 className="card-title text-4xl font-bold">0€</h2>
+                                <h2 className="card-title text-4xl font-bold">{endBalance}€</h2>
                             </div>
                         </div>
                         <div className="stat">

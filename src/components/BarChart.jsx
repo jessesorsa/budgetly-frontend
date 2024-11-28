@@ -69,9 +69,6 @@ const BarChart = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        const labels = [];
-        const spending = [];
-        const income = []
 
         console.log("getting plan dataa");
         const getPlanData = async () => {
@@ -86,6 +83,12 @@ const BarChart = () => {
             }
         }
         getPlanData();
+    }, [])
+
+    useEffect(() => {
+        const labels = [];
+        const spending = [];
+        const income = [];
 
         if (plan !== []) {
             plan.forEach((month) => {

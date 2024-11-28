@@ -6,9 +6,11 @@ import { createPlan } from "../http-actions/http.js";
 const AddMonths = () => {
 
     const [startMonth, setStartMonth] = useState('');
+    const [startName, setStartName] = useState('Start month');
     const [startDropdown, setStartDropdown] = useState(false);
     const [startYear, setStartYear] = useState('');
     const [endMonth, setEndMonth] = useState('');
+    const [endName, setEndName] = useState('End month');
     const [endDropdown, setEndDropdown] = useState(false);
     const [endYear, setEndYear] = useState('');
 
@@ -16,57 +18,45 @@ const AddMonths = () => {
 
     const [userID, setUserID] = useState('');
 
-    const monthToNumber = (monthName) => {
-        let month = "";
-        switch (monthName) {
-            case 'January':
-                month = "01";
-                break;
-            case 'February':
-                month = "02";
-                break;
-            case 'March':
-                month = "03";
-                break;
-            case 'April':
-                month = "04";
-                break;
-            case 'May':
-                month = "05";
-                break;
-            case 'June':
-                month = "06";
-                break;
-            case 'July':
-                month = "07";
-                break;
-            case 'August':
-                month = "08";
-                break;
-            case 'September':
-                month = "09";
-                break;
-            case 'October':
-                month = "10";
-                break;
-            case 'November':
-                month = "11";
-                break;
-            case 'December':
-                month = "12";
-                break;
-        }
-        return month;
+    const months = [
+        { name: 'January', value: '01' },
+        { name: 'February', value: '02' },
+        { name: 'March', value: '03' },
+        { name: 'April', value: '04' },
+        { name: 'May', value: '05' },
+        { name: 'June', value: '06' },
+        { name: 'July', value: '07' },
+        { name: 'August', value: '08' },
+        { name: 'September', value: '09' },
+        { name: 'October', value: '10' },
+        { name: 'November', value: '11' },
+        { name: 'December', value: '12' }
+    ];
 
+    const changeStartMonth = async (value, name) => {
+        setStartName(name);
+        setStartMonth(value);
+        setStartDropdown(false);
+    }
+
+    const changeEndMonth = async (value, name) => {
+        setEndName(name);
+        setEndMonth(value);
+        setEndDropdown(false);
+    }
+
+    const toggleStartDropdown = () => {
+        setStartDropdown(true);
+    }
+    const toggleEndDropdown = () => {
+        setEndDropdown(true);
     }
 
     const addMonths = async () => {
         setLoading(true);
-        const sMonth = monthToNumber(startMonth);
-        const eMonth = monthToNumber(endMonth);
 
-        const startDate = `${startYear}-${sMonth}-01`;
-        const endDate = `${endYear}-${eMonth}-01`;
+        const startDate = `${startYear}-${startMonth}-01`;
+        const endDate = `${endYear}-${endMonth}-01`;
         console.log(startDate, endDate);
 
         const userID = getUserID();
@@ -92,8 +82,38 @@ const AddMonths = () => {
                         <div className="flex space-x-4 w-full py-6">
                             <div className="flex-1">
                                 <div className="flex flex-col gap-4">
-                                    <input type="text" placeholder="Start month" className="input input-bordered w-full" value={startMonth}
-                                        onChange={(e) => setStartMonth(e.target.value)} />
+                                    <div className="dropdown">
+                                        <div tabIndex={0} role="button" className="btn bg-white border border-gray-300 w-full"
+                                            onClick={toggleStartDropdown}>
+                                            <div className="flex flex-row items-center justify-start w-full">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="20"
+                                                    height="20"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="#000000"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                >
+                                                    <path d="M6 9l6 6 6-6" />
+                                                </svg>
+                                                <p className="ml-2">{startName}</p>
+                                            </div>
+                                        </div>
+                                        {startDropdown && (
+                                            <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow max-h-36">
+                                                {months.map((month, index) => (
+                                                    <div className="flex flex-grow gap-2" key={index}>
+                                                        <button onClick={() => changeStartMonth(month.value, month.name)} className="text-center w-full">{month.name}</button>
+                                                    </div>
+
+                                                ))}
+
+                                            </ul>
+                                        )}
+                                    </div>
                                     <input type="text" placeholder="Start year" className="input input-bordered w-full" value={startYear}
                                         onChange={(e) => setStartYear(e.target.value)} />
                                 </div>
@@ -103,8 +123,38 @@ const AddMonths = () => {
                             </div>
                             <div className="flex-1">
                                 <div className="flex flex-col gap-4">
-                                    <input type="text" placeholder="End month" className="input input-bordered w-full" value={endMonth}
-                                        onChange={(e) => setEndMonth(e.target.value)} />
+                                    <div className="dropdown">
+                                        <div tabIndex={0} role="button" className="btn bg-white border border-gray-300 w-full"
+                                            onClick={toggleEndDropdown}>
+                                            <div className="flex flex-row items-center justify-start w-full">
+                                                <svg
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="20"
+                                                    height="20"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="#000000"
+                                                    strokeWidth="2"
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                >
+                                                    <path d="M6 9l6 6 6-6" />
+                                                </svg>
+                                                <p className="ml-2">{endName}</p>
+                                            </div>
+                                        </div>
+                                        {endDropdown && (
+                                            <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow max-h-36">
+                                                {months.map((month, index) => (
+                                                    <div className="flex flex-grow gap-2" key={index}>
+                                                        <button onClick={() => changeEndMonth(month.value, month.name)} className="text-center w-full">{month.name}</button>
+                                                    </div>
+
+                                                ))}
+
+                                            </ul>
+                                        )}
+                                    </div>
                                     <input type="text" placeholder="End year" className="input input-bordered w-full" value={endYear}
                                         onChange={(e) => setEndYear(e.target.value)} />
                                 </div></div>

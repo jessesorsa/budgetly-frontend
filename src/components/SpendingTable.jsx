@@ -1,7 +1,13 @@
+import { getMonths, deleteEvent } from "../http-actions/http.js";
+
 const SpendingTable = ({ events }) => {
 
     console.log("spending", events.spending);
 
+    const deleteFunc = async (eventID) => {
+        console.log("deleting event");
+        await deleteEvent(eventID);
+    }
 
     return (
         <>
@@ -30,13 +36,18 @@ const SpendingTable = ({ events }) => {
                                         )}
                                     </td>
                                     <td className="text-center w-12">
-                                        <button className="btn btn-circle btn-ghost btn-sm">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                                <circle cx="12" cy="12" r="1"></circle>
-                                                <circle cx="19" cy="12" r="1"></circle>
-                                                <circle cx="5" cy="12" r="1"></circle>
-                                            </svg>
-                                        </button>
+                                        <div className="dropdown dropdown-hover dropdown-left">
+                                            <div tabIndex={0} role="button" className="btn m-1 btn-circle btn-ghost btn-sm">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <circle cx="12" cy="12" r="1"></circle>
+                                                    <circle cx="19" cy="12" r="1"></circle>
+                                                    <circle cx="5" cy="12" r="1"></circle>
+                                                </svg>
+                                            </div>
+                                            <ul tabIndex={0} className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+                                                <li><a onClick={() => deleteFunc(event.eventID)}>Delete</a></li>
+                                            </ul>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}

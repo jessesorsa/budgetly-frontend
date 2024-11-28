@@ -131,7 +131,7 @@ const getMonth = async (monthID) => {
         },
     })
     const res = await response.json();
-    console.log("res", res);
+    console.log("month data!!!", res);
     return res;
 };
 
@@ -159,7 +159,7 @@ const createEvent = async (name, category, amount, recurring, userID, monthID, b
         "Creator": userID,
         "Total": amount,
         "Name": name,
-        "Recurring": false,
+        "Recurring": true,
         "Valuta": "2024-12-02",
         "isAsset": false,
         "startOfReoccurence": "",
@@ -183,4 +183,21 @@ const createEvent = async (name, category, amount, recurring, userID, monthID, b
     return response;
 }
 
-export { createPlan, testApi, login, signUp, getMonth, getPlan, createEvent }
+const deleteEvent = async (eventID) => {
+
+    const token = loadToken();
+
+    console.log(eventID);
+
+    const response = await fetch(`${backendURL}/turnover/${eventID}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+    });
+
+    console.log(response);
+}
+
+export { createPlan, testApi, login, signUp, getMonth, getPlan, createEvent, deleteEvent }
