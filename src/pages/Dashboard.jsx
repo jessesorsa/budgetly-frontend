@@ -49,7 +49,7 @@ const Dashboard = () => {
                     <div className="flex flex-row w-full px-4 py-1 gap-4">
                         <div className="card card-bordered border-gray-300 min-w-60">
                             <div className="card py-4 px-6">
-                                <h2 className="card-title text-xl">Current balance</h2>
+                                <h2 className="card-title text-xl">Start balance</h2>
                                 <p className="text-gray-500">Total</p>
                                 <div className="card-actions justify-start mt-4">
                                     <h2 className="card-title text-4xl font-bold">0€</h2>
