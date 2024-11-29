@@ -17,6 +17,10 @@ const LoginCard = () => {
     const SignUp = async () => {
         console.log(email, password);
         const res = await signUp(firstName, lastName, email, password);
+        console.log(res);
+        if (res.budgetPlanID) {
+            navigate(`/`);
+        }
 
         setEmail("");
         setPassword("");
