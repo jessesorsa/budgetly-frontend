@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getBudgetID, getUserID } from "../store/sessionStorage.js";
 import { useParams, useNavigate } from 'react-router-dom';
 
-const AddIncome = ({ monthID }) => {
+const AddIncome = ({ monthID, month, updateMonth }) => {
 
     const [incomeName, setIncomeName] = useState('');
     const [category, setCategory] = useState('');
@@ -14,6 +14,8 @@ const AddIncome = ({ monthID }) => {
     const [isLoading, setLoading] = useState(false);
     const [isLoadingCategroies, setLoadingCategories] = useState(false);
     const [backendCategories, setBackendCategories] = useState([]);
+
+    
 
     
     useEffect(() => {
@@ -31,7 +33,8 @@ const AddIncome = ({ monthID }) => {
         setLoading(true);
         const budgetID = getBudgetID();
         const userID = getUserID();
-        const categoryID = backendCategories.find(cat => cat.name === category).id;
+        const SelectedCategory = backendCategories.find(cat => cat.name === category);
+        const categoryID = SelectedCategory.id;
 
         console.log(incomeName, category, amount, recurring);
         const amount_number = Math.abs(parseFloat(amount));
@@ -40,10 +43,22 @@ const AddIncome = ({ monthID }) => {
         setAmount('');
         setIncomeName('');
         setCategory('');
+        const newIncome = {
+            "Name": incomeName,
+            "Total": amount_number,
+            "Reoccuring": recurring,
+            "Category": SelectedCategory.name,
+        }
+        handleAddIncome(newIncome);
         setLoading(false);
 
         // The page is naively reloaded. I didn't have time to implement proper state management
     }
+
+    const handleAddIncome = (newIncome) => {
+        const updatedIncome = [...month.income, newIncome];
+        updateMonth({ ...month, income: updatedIncome }, true, newIncome.Total);
+    };
 
     return (
         <>

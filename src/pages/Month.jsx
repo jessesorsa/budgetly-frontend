@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getMonth, fetchCategories } from "../http-actions/http.js";
+import { PlanContext } from "../store/PlanContext.js";
 
 import MainLayout from "./MainLayout.jsx";
 import Navbar from "../components/Navbar.jsx";
@@ -14,6 +15,7 @@ import { getUserID } from "../store/sessionStorage.js";
 const Month = () => {
 
     const currentPage = "month";
+    const {plan, setPlan, updateMonthInPlan} = React.useContext(PlanContext);
 
     const [month, setMonth] = useState();
     const [loading, setLoading] = useState(true);
@@ -47,6 +49,17 @@ const Month = () => {
         getCategories();
         getMonthData();
     }, [])
+
+    const updateMonth = (newMonthData, isIncome, amount) => {
+        if (isIncome) {
+            var currentRevenue = parseFloat(monthStats.totalRevenue);
+            monthStats.totalRevenue = currentRevenue + amount;
+            updateMonthInPlan(isIncome, amount, monthID);
+        } else {
+            monthStats.totalCosts += amount;
+        }
+        setMonth(newMonthData);
+    }
 
     if (loading) {
         // While the data is loading, you can show a loading spinner or message
@@ -107,7 +120,7 @@ const Month = () => {
                             onClick={() => document.getElementById('add_income_modal').showModal()}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                         </button>
-                        <AddIncome monthID={monthID} />
+                        <AddIncome monthID={monthID} month={month} updateMonth={updateMonth} />
                     </div>
                     <div className="flex w-full px-2 items-center">
                         <h2 className="text-xl font-bold">Spending</h2>
@@ -120,7 +133,7 @@ const Month = () => {
                 </div>
 
                 <div className="flex flex-row w-full gap-4">
-                    <IncomeTable events={month} />
+                    <IncomeTable events={month} updateMonth={updateMonth}/>
                     <SpendingTable events={month} />
                 </div>
             </MainLayout >

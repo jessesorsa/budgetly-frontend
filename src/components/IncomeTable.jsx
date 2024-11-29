@@ -1,7 +1,7 @@
 import { getMonths, deleteEvent } from "../http-actions/http.js";
 import { useState } from 'react';
 
-const IncomeTable = ({ events, categories }) => {
+const IncomeTable = ({ events, updateMonth, monthData }) => {
 
     console.log("income", events.income);
     const [showPopover, setShowPopover] = useState(false);
@@ -35,6 +35,11 @@ const IncomeTable = ({ events, categories }) => {
             return event.reoccuring;
         }
     }
+
+    const handleAddIncome = (newIncome) => {
+        const updatedIncome = [...events.income, newIncome];
+        updateMonth({ ...events, income: updatedIncome });
+    };
 
 
     return (

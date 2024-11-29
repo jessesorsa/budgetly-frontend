@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { getMonths, getPlan } from "../http-actions/http.js";
 
@@ -7,6 +7,7 @@ import MainLayout from "./MainLayout.jsx";
 import Navbar from "../components/Navbar.jsx";
 import AddMonths from "../components/AddMonths.jsx";
 import { getBudgetID, getUserID } from "../store/sessionStorage.js";
+import { PlanContext } from "../store/PlanContext.js";
 
 const Plan = () => {
 
@@ -15,7 +16,9 @@ const Plan = () => {
     const navigate = useNavigate();
     const userID = getUserID();
 
-    const [plan, setPlan] = useState([]);
+    const {plan, setPlan, updateMonthInPlan} = React.useContext(PlanContext);
+
+    //const [plan, setPlan] = useState([]);
     const [loading, setLoading] = useState(true);
     const [startBalance, setStartBalance] = useState(0);
     const [endBalance, setEndBalance] = useState(0);
@@ -23,6 +26,7 @@ const Plan = () => {
     const goToMonth = async (month) => {
         console.log(month);
         navigate(`/month/${month.monthlyPlanID}`, { state: { monthStats: month } });
+        //navigate(`/month/${month.monthlyPlanID}`, { state: { monthStats: month, updateMonthInPlan } });
     }
 
     useEffect(() => {
