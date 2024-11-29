@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { getMonth } from "../http-actions/http.js";
+import { getMonth, fetchCategories } from "../http-actions/http.js";
 
 import MainLayout from "./MainLayout.jsx";
 import Navbar from "../components/Navbar.jsx";
@@ -17,6 +17,8 @@ const Month = () => {
 
     const [month, setMonth] = useState();
     const [loading, setLoading] = useState(true);
+    const [categories, setCategories] = useState([]);
+    const [loadingCategories, setLoadingCategories] = useState(true);
 
     const { monthID } = useParams();
 
@@ -37,6 +39,12 @@ const Month = () => {
             setMonth(monthData);
             setLoading(false);
         }
+        const getCategories = async () => {
+            const fetchedCategories = await fetchCategories();
+            setCategories(fetchedCategories);
+            setLoadingCategories(false);
+        }
+        getCategories();
         getMonthData();
     }, [])
 

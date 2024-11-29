@@ -1,4 +1,4 @@
-import { createEvent } from "../http-actions/http.js";
+import { createEvent, fetchCategories } from "../http-actions/http.js";
 import { useEffect, useState } from "react";
 import { getBudgetID, getUserID } from "../store/sessionStorage.js";
 import { useParams, useNavigate } from 'react-router-dom';
@@ -9,17 +9,32 @@ const AddSpending = ({ monthID }) => {
     const [category, setCategory] = useState('');
     const [amount, setAmount] = useState('');
     const [recurring, setRecurring] = useState(false);
+    const [numReoccurrences, setNumReoccurrences] = useState('');
+    const [isLoadingCategroies, setLoadingCategories] = useState(false);
+    const [backendCategories, setBackendCategories] = useState([]);
+
 
     const [isLoading, setLoading] = useState(false);
+
+
+    useEffect(() => {
+        const loadCategories = async () => {
+            setLoadingCategories(true);
+            const fetchedCategories = await fetchCategories();
+            setBackendCategories(fetchedCategories);
+            setLoadingCategories(false);
+        };
+        loadCategories();
+    }, []);
 
     const addEvent = async () => {
         setLoading(true);
         const budgetID = getBudgetID();
         const userID = getUserID();
-
-        console.log(spendingName, category, amount, recurring);
+        const categoryID = backendCategories.find(cat => cat.name === category).id;
         const amount_number = -(Math.abs(parseFloat(amount)));
-        await createEvent(spendingName, category, amount_number, recurring, userID, monthID, budgetID);
+        const numReoccurrencesInt = parseInt(numReoccurrences);
+        await createEvent(spendingName, categoryID, amount_number, recurring, userID, monthID, budgetID, numReoccurrencesInt);
         setAmount('');
         setSpendingName('');
         setCategory('');
@@ -36,17 +51,28 @@ const AddSpending = ({ monthID }) => {
                     <div className="flex flex-col gap-6 w-full py-6">
                         <input type="text" placeholder="Name" className="input input-bordered w-full" value={spendingName}
                             onChange={(e) => setSpendingName(e.target.value)} />
-                        {/*<input type="text" placeholder="Category" className="input input-bordered w-full" value={category}
-                            onChange={(e) => setCategory(e.target.value)} />*/}
+                        <select className="select select-bordered w-full" value={category} onChange={(e) => setCategory(e.target.value)}>
+                            {isLoadingCategroies ? (
+                                <option>Loading categories...</option>
+                            ) : (
+                                backendCategories.map((cat, index) => (
+                                    <option key={cat.id} value={cat.name}>{cat.name}</option>
+                                ))
+                            )}
+                        </select>
                         <div className="flex flex-row items-center justify-between">
                             <input type="text" placeholder="Amount" className="input input-bordered w-full" value={amount}
                                 onChange={(e) => setAmount(e.target.value)} />
                             <p className="text text-lg mx-6">€</p>
                         </div>
-                        {/*<div className="flex flex-row gap-6">
+                        {<div className="flex flex-row gap-6">
                             <input type="checkbox" className="checkbox" checked={recurring} onChange={(e) => setRecurring(e.target.checked)} />
                             <p className="">Recurring</p>
-                        </div>*/}
+                        </div>}
+                        {recurring && (
+                            <input type="number" placeholder="Number of Reoccurrences" className="input input-bordered w-full" value={numReoccurrences}
+                                onChange={(e) => setNumReoccurrences(e.target.value)} />
+                        )} 
                     </div>
                     <div className="flex flex-row justify-center">
                         <div className="flex flex-row justify-center items-centered">

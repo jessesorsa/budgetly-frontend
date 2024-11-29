@@ -38,11 +38,8 @@ const testApi = async () => {
 const signUp = async (firstName, lastName, email, password) => {
 
     const hashedPassword = await hashPassword(password);
-    console.log(password);
-    console.log(hashedPassword);
 
     const body = { "FirstName": firstName, "LastName": lastName, "Email": email, "Password": hashedPassword }
-    console.log(body);
 
     const response = await fetch(`${loginURL}/signUp`, {
         method: "POST",
@@ -52,9 +49,7 @@ const signUp = async (firstName, lastName, email, password) => {
         body: JSON.stringify(body)
     });
 
-    console.log(response);
     const res = await response.json();
-    console.log(res);
     return res;
 }
 
@@ -63,7 +58,6 @@ const login = async (email, password) => {
     const hashedPassword = await hashPassword(password);
 
     const body = { "Email": email, "Password": hashedPassword }
-    console.log(body);
 
     const response = await fetch(`${loginURL}/login`, {
         method: "POST",
@@ -74,7 +68,6 @@ const login = async (email, password) => {
     });
 
     const res = await response.json();
-    console.log(res);
     return res;
 }
 
@@ -114,10 +107,7 @@ const createPlan = async (startDate, endDate, userID, budgetID) => {
         body: JSON.stringify(plan)
     });
 
-    console.log("called the /monthlyPlan");
     const res = await response.json();
-
-    console.log("res", res);
     return res;
 }
 
@@ -131,7 +121,6 @@ const getMonth = async (monthID) => {
         },
     })
     const res = await response.json();
-    console.log("month data!!!", res);
     return res;
 };
 
@@ -145,12 +134,10 @@ const getPlan = async (budgetID) => {
         },
     });
     const res = await response.json();
-
-    console.log("res", res);
     return res;
 }
 
-const createEvent = async (name, category, amount, recurring, userID, monthID, budgetID) => {
+const createEvent = async (name, category, amount, recurring, userID, monthID, budgetID, numberOfReoccurences) => {
     const token = loadToken();
 
     console.log("monthID", monthID);
@@ -159,13 +146,13 @@ const createEvent = async (name, category, amount, recurring, userID, monthID, b
         "Creator": userID,
         "Total": amount,
         "Name": name,
-        "Recurring": true,
+        "Reoccuring": recurring,
         "Valuta": "2024-12-02",
         "isAsset": false,
         "startOfReoccurence": "",
         "endOfReoccurence": "",
-        "numberOfReoccurences": 0,
-        "categoryID": "25f2da7b-8169-40e2-a5f6-4345ccada10b",
+        "numberOfReoccurences": numberOfReoccurences,
+        "categoryID": category,
         "monthlyPlanID": monthID,
         "BudgetPlanID": budgetID,
     }
@@ -178,18 +165,16 @@ const createEvent = async (name, category, amount, recurring, userID, monthID, b
         },
         body: JSON.stringify(body)
     });
-
-    console.log(response);
     return response;
 }
 
-const deleteEvent = async (eventID) => {
+const deleteEvent = async (eventID, reoccurences) => {
 
     const token = loadToken();
 
     console.log(eventID);
 
-    const response = await fetch(`${backendURL}/turnover/${eventID}`, {
+    const response = await fetch(`${backendURL}/turnover/${eventID}?reoccurences=${reoccurences}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -200,4 +185,17 @@ const deleteEvent = async (eventID) => {
     console.log(response);
 }
 
-export { createPlan, testApi, login, signUp, getMonth, getPlan, createEvent, deleteEvent }
+const fetchCategories = async () => {
+    const token = loadToken();
+    const response = await fetch(`${backendURL}/categories`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+    });
+    const res = await response.json();
+    return res;
+}
+
+export { createPlan, testApi, login, signUp, getMonth, getPlan, createEvent, deleteEvent, fetchCategories }

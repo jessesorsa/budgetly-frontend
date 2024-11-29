@@ -11,6 +11,7 @@ const LoginCard = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [errorValue, setErrorValue] = useState(false);
+    const [successValue, setSuccessValue] = useState(false);
 
     const navigate = useNavigate();
 
@@ -27,6 +28,10 @@ const LoginCard = () => {
         if (!res.budgetPlanID) {
             setErrorValue(true);
             setTimeout(() => setErrorValue(false), 2000);
+        }else{
+            setSuccessValue(true);
+            setTimeout(() => setSuccessValue(false), 4000);
+            navigate('/dashboard');
         }
     }
 
@@ -52,6 +57,13 @@ const LoginCard = () => {
                 </div >
             )
             }
+            {successValue && (
+                <div className="toast toast-top toast-center">
+                    <div className="alert alert-success">
+                        <span>User created successfully!</span>
+                    </div>
+                </div>
+            )}
             <div className="flex justify-center">
                 <div className="card bg-base-100 w-96 shadow-xl p-2">
                     <div className="card-body">
