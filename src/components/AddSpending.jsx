@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { getBudgetID, getUserID } from "../store/sessionStorage.js";
 import { useParams, useNavigate } from 'react-router-dom';
 
-const AddSpending = ({ monthID }) => {
+const AddSpending = ({ monthID, month, updateMonth }) => {
 
     const [spendingName, setSpendingName] = useState('');
     const [category, setCategory] = useState('');
@@ -31,17 +31,31 @@ const AddSpending = ({ monthID }) => {
         setLoading(true);
         const budgetID = getBudgetID();
         const userID = getUserID();
-        const categoryID = backendCategories.find(cat => cat.name === category).id;
+        //const categoryID = backendCategories.find(cat => cat.name === category).id;
         const amount_number = -(Math.abs(parseFloat(amount)));
         const numReoccurrencesInt = parseInt(numReoccurrences);
+        const SelectedCategory = backendCategories.find(cat => cat.name === category);
+        const categoryID = SelectedCategory.id;
         await createEvent(spendingName, categoryID, amount_number, recurring, userID, monthID, budgetID, numReoccurrencesInt);
         setAmount('');
         setSpendingName('');
         setCategory('');
+        const newIncome = {
+            "Name": spendingName,
+            "Total": amount_number,
+            "Reoccuring": recurring,
+            "Category": SelectedCategory.name,
+        }
+        handleAddSpend(newIncome);
         setLoading(false);
 
         // The page is naively reloaded. I didn't have time to implement proper state management
     }
+
+    const handleAddSpend = (newIncome) => {
+        const updatedIncome = [...month.income, newIncome];
+        updateMonth({ ...month, income: updatedIncome }, true, newIncome.Total);
+    };
 
     return (
         <>

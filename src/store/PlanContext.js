@@ -8,8 +8,8 @@ export const PlanProvider = ({ children }) => {
     const updateMonthInPlan = (isIncome, amount, monthID) => {
         const updatedMonth = plan.find(month => month.monthlyPlanID === monthID);
         if (isIncome) {
-            const currentRevenue = parseFloat(updatedMonth.totalRevenue);
-            updatedMonth.totalRevenue = currentRevenue + amount;
+            //const currentRevenue = parseFloat(updatedMonth.totalRevenue);
+            //updatedMonth.totalRevenue = currentRevenue + amount;
         } else {
             // updatedMonth.totalCosts += amount;
         }
