@@ -48,6 +48,7 @@ const AddSpending = ({ monthID, month, updateMonth }) => {
         }
         handleAddSpend(newIncome);
         setLoading(false);
+        window.location.reload();
 
         // The page is naively reloaded. I didn't have time to implement proper state management
     }

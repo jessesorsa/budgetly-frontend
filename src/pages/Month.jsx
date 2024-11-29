@@ -74,7 +74,7 @@ const Month = () => {
     if (loading) {
         // While the data is loading, you can show a loading spinner or message
         return (
-            <PlanProvider>
+
                 <MainLayout userId={userID}>
                     <Navbar userId={userID} currentPage={currentPage} />
                     <div className="flex flex-row w-full h-full justify-center items-center px-4 py-1">
@@ -83,7 +83,7 @@ const Month = () => {
                         </div>
                     </div>
                 </MainLayout >
-            </PlanProvider>
+
         );
     }
     //{month.stats.Income}
@@ -92,7 +92,7 @@ const Month = () => {
 
     return (
         <>
-            <PlanProvider>
+
                 <MainLayout userId={userID}>
                     <Navbar userId={userID} currentPage={currentPage} />
                     <div className="flex flex-row w-full px-4 py-1">
@@ -150,7 +150,7 @@ const Month = () => {
                         <SpendingTable events={month} />
                     </div>
                 </MainLayout >
-            </PlanProvider>
+
         </>
     )
 };

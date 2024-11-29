@@ -18,6 +18,7 @@ const Plan = () => {
 
     const {plan, setPlan, updateMonthInPlan} = React.useContext(PlanContext);
 
+
     //const [plan, setPlan] = useState([]);
     const [loading, setLoading] = useState(true);
     const [startBalance, setStartBalance] = useState(0);

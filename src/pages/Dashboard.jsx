@@ -30,7 +30,7 @@ const Dashboard = () => {
     const navigate = useNavigate();
 
     const goToPlan = async () => {
-        navigate(`/plan`)
+        navigate(`/plan`);
     }
 
     const toggle = () => {
@@ -63,7 +63,7 @@ const Dashboard = () => {
     }, [navigate]);
 
     useEffect(() => {
-        if (plan !== []) {
+        if (plan.length > 0) {
             let calculatedBalance = 0;
             plan.forEach((month, index) => {
                 if (index === 0) {
@@ -120,9 +120,7 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
                         <div className="flex flex-wrap w-full min-h-60 px-4 pb-4 pt-1 items-center">
                             {bar && (
                                 <div className="card card-bordered border-gray-300 max-h-96 w-full p-6">

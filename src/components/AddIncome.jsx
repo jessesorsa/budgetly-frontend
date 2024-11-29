@@ -14,7 +14,7 @@ const AddIncome = ({ monthID, month, updateMonth }) => {
     const [isLoading, setLoading] = useState(false);
     const [isLoadingCategroies, setLoadingCategories] = useState(false);
     const [backendCategories, setBackendCategories] = useState([]);
-
+    const [showToast, setShowToast] = useState(false);
     
 
     
@@ -50,6 +50,9 @@ const AddIncome = ({ monthID, month, updateMonth }) => {
             "Category": SelectedCategory.name,
         }
         handleAddIncome(newIncome);
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 5000);
+        window.location.reload();
         setLoading(false);
 
         // The page is naively reloaded. I didn't have time to implement proper state management
@@ -62,6 +65,11 @@ const AddIncome = ({ monthID, month, updateMonth }) => {
 
     return (
         <>
+            {showToast && (
+                <div style={{ padding: '10px', borderRadius: '5px', position: 'fixed', top: '10px', right: '10px', zIndex: 1000 }}>
+                    Income successfully added
+                </div>
+            )}
             <dialog id="add_income_modal" className="modal">
                 <div className="modal-box w-96">
                     <h3 className="font-bold text-lg">Add income event</h3>
